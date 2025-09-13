@@ -1,0 +1,31 @@
+name: CI - Validación Proyecto Web
+
+on:
+  push:
+    branches: [ "develop", "main" ]
+  pull_request:
+    branches: [ "develop", "main" ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v3
+
+      - name: Validar estructura de proyecto
+        run: |
+          test -f index.html
+          test -f script.js
+          test -f styles.css
+
+      - name: Validar HTML
+        uses: Cyb3r-Jak3/html5validator-action@v0.5.0
+        with:
+          root: .
+
+      - name: Validar JavaScript con ESLint
+        uses: reviewdog/action-eslint@v1
+        with:
+          reporter: github-check
+          eslint_flags: "script.js"
